@@ -11,14 +11,22 @@
 /* ************************************************************************** */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "parsing.h"
+#include "main.h"
 
 int main(int argc, char *argv[])
 {
-    if (argc == 9)
-        parser(argv);
-    else
-        printf("[Error]: Not enough arguments.");
-    printf("\n");
+    Info *data;
+
+    if (argc != 9) {
+        printf("[Error]: Not enough arguments.\n");
+        return 1;
+    }
+    data = parser(argv);
+    if (data == NULL)
+        return 1;
+
+    free(data);
     return 0;
 }

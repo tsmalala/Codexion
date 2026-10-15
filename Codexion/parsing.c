@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "main.h"
 
 char    ft_tolower(char c)
 {
@@ -21,7 +22,7 @@ char    ft_tolower(char c)
     return (c);
 }
 
-void to_lower_string(char *str) {
+void    to_lower_string(char *str) {
     int i = 0;
     while (str[i] != '\0') {
         str[i] = ft_tolower((unsigned char)str[i]);
@@ -29,7 +30,7 @@ void to_lower_string(char *str) {
     }
 }
 
-int    arg_validator(char *argv[])
+int arg_validator(char *argv[])
 {
     int i = 1;
 
@@ -68,20 +69,28 @@ int error_handlers(int number_of_coders, char *scheduler, char *argv[])
     return 1;
 }
 
-void    *parser(char *argv[])
+Info *parser(char *argv[])
 {
-    int number_of_coders = atoi(argv[1]);
-    int time_to_burnout = atoi(argv[2]);
-    int time_to_compile = atoi(argv[3]);
-    int time_to_debug = atoi(argv[4]);
-    int time_to_refactor = atoi(argv[5]);
-    int number_of_compiles_required = atoi(argv[6]);
-    int dongle_cooldown = atoi(argv[7]);
-    char *scheduler = argv[8];
+    Info *data = malloc(sizeof(Info));
 
-    if (!error_handlers(number_of_coders, scheduler, argv))
-    {
+    if (data == NULL)
+        return NULL;
+
+    data->number_coders = atoi(argv[1]);
+    data->time_to_burnout = atoi(argv[2]);
+    data->time_to_compile = atoi(argv[3]);
+    data->time_to_debug = atoi(argv[4]);
+    data->time_to_refactor = atoi(argv[5]);
+    data->number_of_compiles = atoi(argv[6]);
+    data->dongle_cooldown = atoi(argv[7]);
+    data->scheduler = argv[8];
+
+    if (!error_handlers(data->number_coders,
+                        data->scheduler, argv)) {
         printf("[Error]: An error occurred during data processing.\n");
-        return 0;
+        free(data);
+        return NULL;
     }
+
+    return data;
 }
