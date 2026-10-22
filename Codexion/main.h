@@ -25,6 +25,8 @@ typedef struct {
     int id;
     Dongle *left_dongle;
     Dongle *right_dongle;
+    Info *data;
+    pthread_t pthread;
     int number_of_compilation;
 } Coder;
 
