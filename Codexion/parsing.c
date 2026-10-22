@@ -6,7 +6,7 @@
 /*   By: tsmalala <tsmalala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/13 11:43:07 by tsmalala          #+#    #+#             */
-/*   Updated: 2026/10/13 11:43:08 by tsmalala         ###   ########.fr       */
+/*   Updated: 2026/10/22 09:10:19 by tsmalala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,8 @@ Info *parser(char *argv[])
 
     if (data == NULL)
         return NULL;
+    
+    gettimeofday(&data->program_start, NULL);
 
     data->number_coders = atoi(argv[1]);
     data->time_to_burnout = atoi(argv[2]);

@@ -1,6 +1,9 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#include <sys/time.h>
+
+
 typedef struct {
     int number_coders;
     int time_to_burnout;
@@ -10,19 +13,19 @@ typedef struct {
     int number_of_compiles;
     int dongle_cooldown;
     char *scheduler;
+    struct timeval program_start;
 } Info;
 
 typedef struct {
-    int id;
-    int last_use;
+    struct timeval last_use;
     int is_free;
 } Dongle;
 
 typedef struct {
     int id;
-    int dongle_gauche;
-    int dongle_droite;
-    int nomber_of_compilation;
+    Dongle *left_dongle;
+    Dongle *right_dongle;
+    int number_of_compilation;
 } Coder;
 
 #endif
