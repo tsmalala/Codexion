@@ -18,7 +18,8 @@ typedef struct {
 
 typedef struct {
     struct timeval last_use;
-    int is_free;
+    pthread_mutex_t is_free_mutex;
+    int id;
 } Dongle;
 
 typedef struct {

@@ -18,7 +18,7 @@
 #include "parsing.h"
 #include "main.h"
 
-Dongle *create_dongle(int id,int dongle_cooldown)
+Dongle *create_dongle(int dongle_cooldown, int i)
 {
     Dongle  *dongle;
     struct timeval last_use;
@@ -35,7 +35,9 @@ Dongle *create_dongle(int id,int dongle_cooldown)
 
     dongle = (Dongle *)malloc(sizeof(Dongle));
     dongle->last_use = last_use;
-    dongle->is_free = 1;
+    dongle->id = i + 1;
+
+    pthread_mutex_init(&dongle->is_free_mutex, NULL);
 
     return dongle;
 }
@@ -65,40 +67,65 @@ long long get_time(struct timeval start)
     return diff_ms;
 }
 
-void    *coder_routine(void *arg)
+void *coder_routine(void *arg)
 {
-    Coder *coder;
+    Coder   *coder;
+    Dongle  *first;
+    Dongle  *second;
 
     coder = (Coder *)arg;
-    while (coder->number_of_compilation < coder->data->number_of_compiles)
+
+    while (coder->number_of_compilation
+        < coder->data->number_of_compiles)
     {
-        if (coder->left_dongle->is_free)
+        if (coder->left_dongle->id < coder->right_dongle->id)
         {
-            coder->left_dongle->is_free = 0;
-            printf("%lld %d has taken a dongle\n", get_time(coder->data->program_start), coder->id);
+            first = coder->left_dongle;
+            second = coder->right_dongle;
         }
-        if (coder->right_dongle->is_free)
+        else
         {
-            coder->right_dongle->is_free = 0;
-            printf("%lld %d has taken a dongle\n", get_time(coder->data->program_start), coder->id);
+            first = coder->right_dongle;
+            second = coder->left_dongle;
         }
-        printf("%lld %d is compiling\n", get_time(coder->data->program_start), coder->id);
+
+        pthread_mutex_lock(&first->is_free_mutex);
+        pthread_mutex_lock(&second->is_free_mutex);
+
+        printf("%lld %d has taken a dongle\n",
+            get_time(coder->data->program_start), coder->id);
+        printf("%lld %d has taken a dongle\n",
+            get_time(coder->data->program_start), coder->id);
+
+        printf("%lld %d is compiling\n",
+            get_time(coder->data->program_start), coder->id);
+
         usleep(coder->data->time_to_compile * 1000);
+
         gettimeofday(&coder->left_dongle->last_use, NULL);
         gettimeofday(&coder->right_dongle->last_use, NULL);
-        coder->left_dongle->is_free = 1;
-        coder->right_dongle->is_free = 1;
-        printf("%lld %d is debugging\n", get_time(coder->data->program_start), coder->id);
+
+        pthread_mutex_unlock(&second->is_free_mutex);
+        pthread_mutex_unlock(&first->is_free_mutex);
+
+        printf("%lld %d is debugging\n",
+            get_time(coder->data->program_start), coder->id);
+
         usleep(coder->data->time_to_refactor * 1000);
-        printf("%lld %d is refactoring\n", get_time(coder->data->program_start), coder->id);
+
+        printf("%lld %d is refactoring\n",
+            get_time(coder->data->program_start), coder->id);
+
         coder->number_of_compilation++;
     }
+    return NULL;
 }
 
 void    run_threads(Coder **coders, Info *data)
 {
     int i = 0;
     int i_join = 0;
+
     while (i < data->number_coders)
     {
         pthread_create(&coders[i]->pthread, NULL, coder_routine, coders[i]);
@@ -132,7 +159,7 @@ int main(int argc, char *argv[])
     dongles = (Dongle **)malloc(sizeof(Dongle *) * data->number_coders);
     while (i_dongle < data->number_coders)
     {
-        dongles[i_dongle] = create_dongle(i_dongle + 1, data->dongle_cooldown);
+        dongles[i_dongle] = create_dongle(data->dongle_cooldown, i_dongle);
         i_dongle++;
     }
     while (i < data->number_coders)

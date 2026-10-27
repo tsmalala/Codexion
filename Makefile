@@ -3,7 +3,8 @@ NAME = codexion
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
-SRC = Codexion/main.c
+SRC = Codexion/main.c \
+		Codexion/parsing.c
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)
