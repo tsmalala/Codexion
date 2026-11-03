@@ -6,7 +6,7 @@
 /*   By: tsmalala <tsmalala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/13 11:44:50 by tsmalala          #+#    #+#             */
-/*   Updated: 2026/11/03 15:50:13 by tsmalala         ###   ########.fr       */
+/*   Updated: 2026/11/03 16:14:54 by tsmalala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,7 @@ void    *coder_routine(void *arg)
         log_message(coder->id, get_time(coder->data->program_start), coder->data->has_burnout, "%lld %d has taken a dongle\n");
 
         log_message(coder->id, get_time(coder->data->program_start), coder->data->has_burnout, "%lld %d is compiling\n");
+        gettimeofday(&coder->last_compilation, NULL);
 
         usleep(coder->data->time_to_compile * 1000);
 
@@ -126,13 +127,26 @@ void    *coder_routine(void *arg)
     return NULL;
 }
 
+int is_codexion_finished(Coder **coders)
+{
+    int i = 0;
+    
+    while (i < coders[0]->data->number_coders)
+    {
+        if (coders[i]->number_of_compilation != coders[i]->data->number_of_compiles)
+            return 0;
+        i++;
+    }
+    return 1;
+}
+
 void    *check_burnout(void *arg)
 {
     Coder **coders;
     
     coders = (Coder **)arg;
     
-    while (1)
+    while (!is_codexion_finished(coders))
     {
         int i = 0;
         while (i < coders[0]->data->number_coders)
