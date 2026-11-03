@@ -6,7 +6,7 @@
 /*   By: tsmalala <tsmalala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/13 11:44:50 by tsmalala          #+#    #+#             */
-/*   Updated: 2026/10/22 10:49:19 by tsmalala         ###   ########.fr       */
+/*   Updated: 2026/11/03 15:50:13 by tsmalala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,15 @@ long long get_time(struct timeval start)
     return diff_ms;
 }
 
-void *coder_routine(void *arg)
+void    log_message(int coder_id, long long program_start, int is_burnout, char *message)
+{
+    if (is_burnout == 1)
+        return ;
+    else
+        printf(message, program_start, coder_id);
+}
+
+void    *coder_routine(void *arg)
 {
     Coder   *coder;
     Dongle  *first;
@@ -78,6 +86,8 @@ void *coder_routine(void *arg)
     while (coder->number_of_compilation
         < coder->data->number_of_compiles)
     {
+        if (coder->data->has_burnout == 1)
+            return NULL;
         if (coder->left_dongle->id < coder->right_dongle->id)
         {
             first = coder->left_dongle;
@@ -92,13 +102,10 @@ void *coder_routine(void *arg)
         pthread_mutex_lock(&first->is_free_mutex);
         pthread_mutex_lock(&second->is_free_mutex);
 
-        printf("%lld %d has taken a dongle\n",
-            get_time(coder->data->program_start), coder->id);
-        printf("%lld %d has taken a dongle\n",
-            get_time(coder->data->program_start), coder->id);
+        log_message(coder->id, get_time(coder->data->program_start), coder->data->has_burnout, "%lld %d has taken a dongle\n");
+        log_message(coder->id, get_time(coder->data->program_start), coder->data->has_burnout, "%lld %d has taken a dongle\n");
 
-        printf("%lld %d is compiling\n",
-            get_time(coder->data->program_start), coder->id);
+        log_message(coder->id, get_time(coder->data->program_start), coder->data->has_burnout, "%lld %d is compiling\n");
 
         usleep(coder->data->time_to_compile * 1000);
 
@@ -108,15 +115,36 @@ void *coder_routine(void *arg)
         pthread_mutex_unlock(&second->is_free_mutex);
         pthread_mutex_unlock(&first->is_free_mutex);
 
-        printf("%lld %d is debugging\n",
-            get_time(coder->data->program_start), coder->id);
+        log_message(coder->id, get_time(coder->data->program_start), coder->data->has_burnout, "%lld %d is debugging\n");
 
         usleep(coder->data->time_to_refactor * 1000);
 
-        printf("%lld %d is refactoring\n",
-            get_time(coder->data->program_start), coder->id);
+        log_message(coder->id, get_time(coder->data->program_start), coder->data->has_burnout, "%lld %d is refactoring\n");
 
         coder->number_of_compilation++;
+    }
+    return NULL;
+}
+
+void    *check_burnout(void *arg)
+{
+    Coder **coders;
+    
+    coders = (Coder **)arg;
+    
+    while (1)
+    {
+        int i = 0;
+        while (i < coders[0]->data->number_coders)
+        {
+            if (get_time(coders[i]->last_compilation) >= coders[i]->data->time_to_burnout)
+            {
+                log_message(coders[i]->id, get_time(coders[i]->data->program_start), coders[i]->data->has_burnout, "%lld %d burned out\n");
+                coders[i]->data->has_burnout = 1;
+                return NULL;
+            }
+            i++;
+        }
     }
     return NULL;
 }
@@ -126,12 +154,15 @@ void    run_threads(Coder **coders, Info *data)
     int i = 0;
     int i_join = 0;
 
+    pthread_t burnout_thread;
+    pthread_create(&burnout_thread, NULL, check_burnout, coders);
+    
     while (i < data->number_coders)
     {
         pthread_create(&coders[i]->pthread, NULL, coder_routine, coders[i]);
         i++;
     }
-
+    pthread_join(burnout_thread, NULL);
     while (i_join < data->number_coders)
     {
         pthread_join(coders[i_join]->pthread, NULL);
@@ -166,10 +197,10 @@ int main(int argc, char *argv[])
     {
         coders[i] = create_coder(i + 1, dongles[i], dongles[(i + 1) % data->number_coders]);
         coders[i]->data = data;
+        gettimeofday(&coders[i]->last_compilation, NULL);
         i++;
     }
 
-    // coder_routine(coders[0]);
     run_threads(coders, data);
 
     i_dongle = 0;

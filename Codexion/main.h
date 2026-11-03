@@ -14,6 +14,7 @@ typedef struct {
     int dongle_cooldown;
     char *scheduler;
     struct timeval program_start;
+    int has_burnout;
 } Info;
 
 typedef struct {
@@ -29,6 +30,7 @@ typedef struct {
     Info *data;
     pthread_t pthread;
     int number_of_compilation;
+    struct timeval last_compilation;
 } Coder;
 
 #endif
