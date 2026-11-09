@@ -1,0 +1,40 @@
+#include <stdio.h>
+#include "main.h"
+#include "time_utils.h"
+
+int is_codexion_finished(Coder **coders)
+{
+    
+    int i = 0;
+    
+    while (i < coders[0]->data->number_coders)
+    {
+        if (coders[i]->number_of_compilation != coders[i]->data->number_of_compiles)
+            return 0;
+        i++;
+    }
+    return 1;
+}
+
+void    *check_burnout(void *arg)
+{
+    Coder **coders;
+    
+    coders = (Coder **)arg;
+    
+    while (!is_codexion_finished(coders))
+    {
+        int i = 0;
+        while (i < coders[0]->data->number_coders)
+        {
+            if (get_time(coders[i]->last_compilation) >= coders[i]->data->time_to_burnout)
+            {
+                log_message(coders[i]->id, get_time(coders[i]->data->program_start), coders[i]->data->has_burnout, "%lld %d burned out\n");
+                coders[i]->data->has_burnout = 1;
+                return (NULL);
+            }
+            i++;
+        }
+    }
+    return (NULL);
+}
