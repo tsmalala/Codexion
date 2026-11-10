@@ -1,15 +1,14 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: tsmalala <tsmalala@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/13 11:44:50 by tsmalala          #+#    #+#             */
-/*   Updated: 2026/11/09 19:16:05 by tsmalala         ###   ########.fr       */
+/*                                                       :::      ::::::::    */
+/*   main.c                                            :+:      :+:    :+:    */
+/*                                                   +:+ +:+         +:+      */
+/*   By: tsmalala <tsmalala@student.42antananarivo.#+#  +:+       +#+         */
+/*                                               +#+#+#+#+#+   +#+            */
+/*   Created: 2026/10/13 11:44:50 by tsmalala         #+#    #+#              */
+/*   Updated: 2026/11/09 20:17:53 by tsmalala        ###   ########.fr        */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,7 +41,7 @@ static int	init_coders(Coder **coders, Dongle **dongles, Info *data)
 	while (i < data->number_coders)
 	{
 		coders[i] = create_coder(i + 1, dongles[i],
-				dongles[(i + 1) % data->number_coders]);
+			dongles[(i + 1) % data->number_coders]);
 		if (!coders[i])
 			return (1);
 		coders[i]->data = data;
@@ -66,22 +65,20 @@ static void	link_coders(Coder **coders, int number)
 	}
 }
 
-
 static void	clean_up(Coder **coders, Dongle **dongles, int number)
 {
 	int	i;
-    int i_dongle;
+	int	i_dongle;
 
 	i = 0;
-    i_dongle = 0;
+	i_dongle = 0;
 	while (i < number)
 	{
 		free(coders[i]);
 		i++;
 	}
 	free(coders);
-
-    while (i < number)
+	while (i < number)
 	{
 		pthread_mutex_destroy(&dongles[i]->is_free_mutex);
 		free(dongles[i]);
@@ -101,13 +98,13 @@ int	main(int argc, char **argv)
 	data = parser(argv);
 	if (!data)
 		return (1);
-	coders = malloc(sizeof(Coder *) * data->number_coders);
-	dongles = malloc(sizeof(Dongle *) * data->number_coders);
+	coders = malloc(sizeof(Coder *)*data->number_coders);
+	dongles = malloc(sizeof(Dongle *)*data->number_coders);
 	if (!coders || !dongles)
 		return (free(coders), free(dongles), free(data), 1);
 	if (init_dongles(dongles, data) || init_coders(coders,
-			dongles, data))
-		return (1);
+				dongles, data))
+	return (1);
 	link_coders(coders, data->number_coders);
 	run_threads(coders, data);
 	clean_up(coders, dongles, data->number_coders);

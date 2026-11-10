@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parsing.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: tsmalala <tsmalala@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/13 11:43:07 by tsmalala          #+#    #+#             */
-/*   Updated: 2026/11/03 09:47:19 by tsmalala         ###   ########.fr       */
+/*                                                       :::      ::::::::    */
+/*   parsing.c                                         :+:      :+:    :+:    */
+/*                                                   +:+ +:+         +:+      */
+/*   By: tsmalala <tsmalala@student.42antananarivo.#+#  +:+       +#+         */
+/*                                               +#+#+#+#+#+   +#+            */
+/*   Created: 2026/10/13 11:43:07 by tsmalala         #+#    #+#              */
+/*   Updated: 2026/11/09 20:28:16 by tsmalala        ###   ########.fr        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,85 +15,91 @@
 #include <string.h>
 #include "main.h"
 
-char    ft_tolower(char c)
+char	ft_tolower(char c)
 {
-    if (c >= 'A' && c <= 'Z')
-        return (c + 32);
-    return (c);
+	if (c >= 'A' && c <= 'Z')
+		return (c + 32);
+	return (c);
 }
 
-void    to_lower_string(char *str) {
-    int i = 0;
-    while (str[i] != '\0') {
-        str[i] = ft_tolower((unsigned char)str[i]);
-        i++;
-    }
+void	to_lower_string(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] != '\0')
+	{
+		str[i] = ft_tolower((unsigned char) str[i]);
+		i++;
+	}
 }
 
-int arg_validator(char *argv[])
+int	arg_validator(char *argv[])
 {
-    int i = 1;
+	int	i;
 
-    while (i <= 7)
-    {
-        int j = 0;
-        long int n = 0;
-        char *str = argv[i];
+	i = 1;
+	while (i <= 7)
+	{
+		int			j;
+		long int	n;
+		char		*str;
 
-        while (str[j])
-        {
-            if (str[j] >= '0' && str[j] <= '9')
-            {
-                n = n * 10 + (str[j] - '0');
-                j++;
-            }
-            else
-                return 0;
-        }
-        if (n > 2147483647)
-            return 0;
-        i++;
-    }
-    return 1;
+		j = 0;
+		n = 0;
+		str = argv[i];
+		while (str[j])
+		{
+			if (str[j] >= '0' && str[j] <= '9')
+			{
+				n = n * 10 + (str[j] - '0');
+				j++;
+			}
+			else
+				return (0);
+		}
+		if (n > 2147483647)
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
-int error_handlers(int number_of_coders, char *scheduler, char *argv[])
+int	error_handlers(int number_of_coders, char *scheduler, char *argv[])
 {
-    if (arg_validator(argv) == 0)
-        return 0;
-    to_lower_string(scheduler);
-    if (number_of_coders < 0)
-        return 0;
-    if (strcmp(scheduler, "fifo") != 0 && strcmp(scheduler, "edf") != 0)
-        return 0;
-    return 1;
+	if (arg_validator(argv) == 0)
+		return (0);
+	to_lower_string(scheduler);
+	if (number_of_coders < 0)
+		return (0);
+	if (strcmp(scheduler, "fifo") != 0 && strcmp(scheduler, "edf") != 0)
+		return (0);
+	return (1);
 }
 
-Info *parser(char *argv[])
+Info	*parser(char *argv[])
 {
-    Info *data = malloc(sizeof(Info));
+	Info	*data;
 
-    if (data == NULL)
-        return NULL;
-    
-    gettimeofday(&data->program_start, NULL);
-
-    data->has_burnout = 0;
-    data->number_coders = atoi(argv[1]);
-    data->time_to_burnout = atoi(argv[2]);
-    data->time_to_compile = atoi(argv[3]);
-    data->time_to_debug = atoi(argv[4]);
-    data->time_to_refactor = atoi(argv[5]);
-    data->number_of_compiles = atoi(argv[6]);
-    data->dongle_cooldown = atoi(argv[7]);
-    data->scheduler = argv[8];
-
-    if (!error_handlers(data->number_coders,
-                        data->scheduler, argv)) {
-        printf("[Error]: An error occurred during data processing.\n");
-        free(data);
-        return NULL;
-    }
-
-    return data;
+	data = malloc(sizeof(Info));
+	if (data == NULL)
+		return (NULL);
+	gettimeofday(&data->program_start, NULL);
+	data->has_burnout = 0;
+	data->number_coders = atoi(argv[1]);
+	data->time_to_burnout = atoi(argv[2]);
+	data->time_to_compile = atoi(argv[3]);
+	data->time_to_debug = atoi(argv[4]);
+	data->time_to_refactor = atoi(argv[5]);
+	data->number_of_compiles = atoi(argv[6]);
+	data->dongle_cooldown = atoi(argv[7]);
+	data->scheduler = argv[8];
+	if (!error_handlers(data->number_coders,
+				data->scheduler, argv))
+	{
+		printf("[Error]: An error occurred during data processing.\n");
+		free(data);
+		return (NULL);
+	}
+	return (data);
 }

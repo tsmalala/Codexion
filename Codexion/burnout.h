@@ -1,6 +1,18 @@
-#ifndef BURNOUT_H
-#define BURNOUT_H
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                       :::      ::::::::    */
+/*   burnout.h                                         :+:      :+:    :+:    */
+/*                                                   +:+ +:+         +:+      */
+/*   By: tsmalala <tsmalala@student.42antananarivo.#+#  +:+       +#+         */
+/*                                               +#+#+#+#+#+   +#+            */
+/*   Created: 2026/11/09 20:15:11 by tsmalala         #+#    #+#              */
+/*   Updated: 2026/11/09 20:17:19 by tsmalala        ###   ########.fr        */
+/*                                                                            */
+/* ************************************************************************** */
 
-void    *check_burnout(void *arg);
+#ifndef BURNOUT_H
+# define BURNOUT_H
+
+void	*check_burnout(void *arg);
 
 #endif

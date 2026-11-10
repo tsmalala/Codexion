@@ -1,32 +1,53 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   scheduler.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tsmalala <tsmalala@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/11/09 20:18:29 by tsmalala          #+#    #+#             */
+/*   Updated: 2026/11/10 12:01:24 by tsmalala         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <stdio.h>
 #include <string.h>
 #include "main.h"
 #include "time_utils.h"
 
-int fifo(Coder *coder, Coder *neighbor)
+int	fifo(Coder *coder, Coder *neighbor)
 {
-    if (neighbor->is_compiling)
-        return 1;
-    return get_time(coder->time_request) > get_time(neighbor->time_request);
+	if (neighbor->is_compiling)
+		return (1);
+	return (get_time(coder->time_request) >= get_time(neighbor->time_request));
 }
 
-int scheduler(Coder *coder)
+long long	get_deadline(Coder *coder)
 {
-    if (strcmp(coder->data->scheduler, "fifo") == 0)
-    {
-        if (!coder->left_dongle->is_free || !coder->right_dongle->is_free)
-        {
-            coder->is_compiling = 1;
-            return 1;
-        }
-        if (fifo(coder, coder->left_coder)
-            && fifo(coder, coder->right_coder))
-            return 0;
-        return 1;
-    }
-    if (strcmp(coder->data->scheduler, "edf") == 0)
-    {
-        printf("EDF\n");
-    }
-    return 0;
+	return get_time(coder->last_compilation) + coder->data->time_to_burnout;
+}
+
+int	edf(Coder *coder, Coder *neighbor)
+{
+	if (neighbor->is_compiling)
+		return (1);
+	return (get_deadline(coder) <= get_deadline(neighbor));
+}
+
+int	scheduler(Coder *coder)
+{
+	if (strcmp(coder->data->scheduler, "fifo") == 0)
+	{
+		if (fifo(coder, coder->left_coder)
+				&& fifo(coder, coder->right_coder))
+			return (0);
+		return (1);
+	}
+	if (strcmp(coder->data->scheduler, "edf") == 0)
+	{
+		if (edf(coder, coder->left_coder) && edf(coder, coder->right_coder))
+			return 0;
+		return 1;
+	}
+	return (0);
 }

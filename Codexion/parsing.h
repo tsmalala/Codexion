@@ -1,6 +1,18 @@
-#ifndef PARSING_H
-#define PARSING_H
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                       :::      ::::::::    */
+/*   parsing.h                                         :+:      :+:    :+:    */
+/*                                                   +:+ +:+         +:+      */
+/*   By: tsmalala <tsmalala@student.42antananarivo.#+#  +:+       +#+         */
+/*                                               +#+#+#+#+#+   +#+            */
+/*   Created: 2026/11/09 20:18:25 by tsmalala         #+#    #+#              */
+/*   Updated: 2026/11/09 20:18:26 by tsmalala        ###   ########.fr        */
+/*                                                                            */
+/* ************************************************************************** */
 
-void    *parser(char *argv[]);
+#ifndef PARSING_H
+# define PARSING_H
+
+void	*parser(char *argv[]);
 
 #endif
