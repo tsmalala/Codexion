@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                       :::      ::::::::    */
-/*   main.h                                            :+:      :+:    :+:    */
-/*                                                   +:+ +:+         +:+      */
-/*   By: tsmalala <tsmalala@student.42antananarivo.#+#  +:+       +#+         */
-/*                                               +#+#+#+#+#+   +#+            */
-/*   Created: 2026/11/09 20:17:57 by tsmalala         #+#    #+#              */
-/*   Updated: 2026/11/09 20:17:58 by tsmalala        ###   ########.fr        */
+/*                                                        :::      ::::::::   */
+/*   main.h                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tsmalala <tsmalala@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/11/09 20:17:57 by tsmalala          #+#    #+#             */
+/*   Updated: 2026/11/11 10:49:39 by tsmalala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ typedef struct Info
 	char			*scheduler;
 	struct timeval	program_start;
 	int				has_burnout;
-}	Info;
+}	t_Info;
 
 typedef struct Dongle
 {
@@ -36,14 +36,14 @@ typedef struct Dongle
 	struct timeval	last_use;
 	int				is_free;
 	pthread_mutex_t	is_free_mutex;
-}	Dongle;
+}	t_Dongle;
 
 typedef struct Coder
 {
 	int				id;
-	Dongle			*left_dongle;
-	Dongle			*right_dongle;
-	Info			*data;
+	t_Dongle		*left_dongle;
+	t_Dongle		*right_dongle;
+	t_Info			*data;
 	pthread_t		pthread;
 	int				number_of_compilation;
 	int				is_compiling;
@@ -51,6 +51,6 @@ typedef struct Coder
 	struct timeval	time_request;
 	struct Coder	*left_coder;
 	struct Coder	*right_coder;
-}	Coder;
+}	t_Coder;
 
 #endif

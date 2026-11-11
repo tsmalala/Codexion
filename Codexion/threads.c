@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                       :::      ::::::::    */
-/*   threads.c                                         :+:      :+:    :+:    */
-/*                                                   +:+ +:+         +:+      */
-/*   By: tsmalala <tsmalala@student.42antananarivo.#+#  +:+       +#+         */
-/*                                               +#+#+#+#+#+   +#+            */
-/*   Created: 2026/11/09 20:18:37 by tsmalala         #+#    #+#              */
-/*   Updated: 2026/11/09 20:29:04 by tsmalala        ###   ########.fr        */
+/*                                                        :::      ::::::::   */
+/*   threads.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tsmalala <tsmalala@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/11/09 20:18:37 by tsmalala          #+#    #+#             */
+/*   Updated: 2026/11/11 11:10:18 by tsmalala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "burnout.h"
 #include "main.h"
 
-void	run_threads(Coder **coders, Info *data)
+void	run_threads(t_Coder **coders, t_Info *data)
 {
 	int			i;
 	int			i_join;

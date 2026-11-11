@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                       :::      ::::::::    */
-/*   initialization.c                                  :+:      :+:    :+:    */
-/*                                                   +:+ +:+         +:+      */
-/*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
-/*                                               +#+#+#+#+#+   +#+            */
-/*   Created: 2026/11/09 20:14:40 by username         #+#    #+#              */
-/*   Updated: 2026/11/09 20:14:41 by username        ###   ########.fr        */
+/*                                                        :::      ::::::::   */
+/*   initialization.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tsmalala <tsmalala@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/11/09 20:14:40 by username          #+#    #+#             */
+/*   Updated: 2026/11/11 10:58:02 by tsmalala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 #include <sys/time.h>
 #include "main.h"
 
-Dongle	*create_dongle(int dongle_cooldown, int i)
+t_Dongle	*create_dongle(int dongle_cooldown, int i)
 {
-	Dongle			*dongle;
-	struct timeval	last_use;
+	t_Dongle			*dongle;
+	struct timeval		last_use;
 
 	gettimeofday(&last_use, NULL);
 	last_use.tv_usec -= (dongle_cooldown % 1000) * 1000;
@@ -28,7 +28,7 @@ Dongle	*create_dongle(int dongle_cooldown, int i)
 		last_use.tv_usec += 1000000;
 		last_use.tv_sec--;
 	}
-	dongle = (Dongle *) malloc(sizeof(Dongle));
+	dongle = (t_Dongle *) malloc(sizeof(t_Dongle));
 	dongle->last_use = last_use;
 	dongle->id = i + 1;
 	dongle->is_free = 1;
@@ -36,11 +36,11 @@ Dongle	*create_dongle(int dongle_cooldown, int i)
 	return (dongle);
 }
 
-Coder	*create_coder(int id, Dongle *left_dongle, Dongle *right_dongle)
+t_Coder	*create_coder(int id, t_Dongle *left_dongle, t_Dongle *right_dongle)
 {
-	Coder	*coder;
+	t_Coder	*coder;
 
-	coder = (Coder *) malloc(sizeof(Coder));
+	coder = (t_Coder *) malloc(sizeof(t_Coder));
 	coder->id = id;
 	coder->left_dongle = left_dongle;
 	coder->right_dongle = right_dongle;

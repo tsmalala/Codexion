@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                       :::      ::::::::    */
-/*   parsing.c                                         :+:      :+:    :+:    */
-/*                                                   +:+ +:+         +:+      */
-/*   By: tsmalala <tsmalala@student.42antananarivo.#+#  +:+       +#+         */
-/*                                               +#+#+#+#+#+   +#+            */
-/*   Created: 2026/10/13 11:43:07 by tsmalala         #+#    #+#              */
-/*   Updated: 2026/11/09 20:28:16 by tsmalala        ###   ########.fr        */
+/*                                                        :::      ::::::::   */
+/*   parsing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tsmalala <tsmalala@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/10/13 11:43:07 by tsmalala          #+#    #+#             */
+/*   Updated: 2026/11/11 11:11:04 by tsmalala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,14 @@ void	to_lower_string(char *str)
 
 int	arg_validator(char *argv[])
 {
-	int	i;
+	int			i;
+	int			j;
+	long int	n;
+	char		*str;
 
 	i = 1;
 	while (i <= 7)
 	{
-		int			j;
-		long int	n;
-		char		*str;
-
 		j = 0;
 		n = 0;
 		str = argv[i];
@@ -77,11 +76,11 @@ int	error_handlers(int number_of_coders, char *scheduler, char *argv[])
 	return (1);
 }
 
-Info	*parser(char *argv[])
+t_Info	*parser(char *argv[])
 {
-	Info	*data;
+	t_Info	*data;
 
-	data = malloc(sizeof(Info));
+	data = malloc(sizeof(t_Info));
 	if (data == NULL)
 		return (NULL);
 	gettimeofday(&data->program_start, NULL);
@@ -95,7 +94,7 @@ Info	*parser(char *argv[])
 	data->dongle_cooldown = atoi(argv[7]);
 	data->scheduler = argv[8];
 	if (!error_handlers(data->number_coders,
-				data->scheduler, argv))
+			data->scheduler, argv))
 	{
 		printf("[Error]: An error occurred during data processing.\n");
 		free(data);

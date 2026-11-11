@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                       :::      ::::::::    */
-/*   initialization.h                                  :+:      :+:    :+:    */
-/*                                                   +:+ +:+         +:+      */
-/*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
-/*                                               +#+#+#+#+#+   +#+            */
-/*   Created: 2026/11/09 20:14:49 by username         #+#    #+#              */
-/*   Updated: 2026/11/09 20:14:50 by username        ###   ########.fr        */
+/*                                                        :::      ::::::::   */
+/*   initialization.h                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tsmalala <tsmalala@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/11/09 20:14:49 by username          #+#    #+#             */
+/*   Updated: 2026/11/11 10:55:47 by tsmalala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 
 # include "main.h"
 
-Dongle	*create_dongle(int dongle_cooldown, int i);
-Coder	*create_coder(int id, Dongle *left_dongle, Dongle *right_dongle);
+t_Dongle	*create_dongle(int dongle_cooldown, int i);
+t_Coder		*create_coder(int id, t_Dongle *left_dongle,
+				t_Dongle *right_dongle);
 
 #endif

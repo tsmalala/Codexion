@@ -6,7 +6,7 @@
 /*   By: tsmalala <tsmalala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/09 20:17:38 by tsmalala          #+#    #+#             */
-/*   Updated: 2026/11/10 12:01:43 by tsmalala         ###   ########.fr       */
+/*   Updated: 2026/11/11 11:01:14 by tsmalala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,13 @@
 
 void	*coder_routine(void *arg)
 {
-	Coder	*coder;
-	Dongle	*first;
-	Dongle	*second;
+	t_Coder		*coder;
+	t_Dongle	*first;
+	t_Dongle	*second;
 
-	coder = (Coder *) arg;
+	coder = (t_Coder *) arg;
 	while (coder->number_of_compilation
-			< coder->data->number_of_compiles)
+		< coder->data->number_of_compiles)
 	{
 		if (coder->data->has_burnout == 1)
 			return (NULL);
@@ -40,7 +40,9 @@ void	*coder_routine(void *arg)
 		}
 		coder->is_compiling = 0;
 		gettimeofday(&coder->time_request, NULL);
-		while (scheduler(coder)) {}
+		while (scheduler(coder))
+		{
+		}
 		pthread_mutex_lock(&first->is_free_mutex);
 		pthread_mutex_lock(&second->is_free_mutex);
 		first->is_free = 0;
@@ -50,12 +52,12 @@ void	*coder_routine(void *arg)
 		{
 		}
 		log_message(coder->id, get_time(coder->data->program_start
-			), coder->data->has_burnout, "%lld %d has taken a dongle\n");
+				), coder->data->has_burnout, "%lld %d has taken a dongle\n");
 		log_message(coder->id, get_time(coder->data->program_start
-			), coder->data->has_burnout, "%lld %d has taken a dongle\n");
+				), coder->data->has_burnout, "%lld %d has taken a dongle\n");
 		gettimeofday(&coder->last_compilation, NULL);
 		log_message(coder->id, get_time(coder->data->program_start
-			), coder->data->has_burnout, "%lld %d is compiling\n");
+				), coder->data->has_burnout, "%lld %d is compiling\n");
 		usleep(coder->data->time_to_compile * 1000);
 		gettimeofday(&coder->left_dongle->last_use, NULL);
 		gettimeofday(&coder->right_dongle->last_use, NULL);
@@ -64,10 +66,10 @@ void	*coder_routine(void *arg)
 		pthread_mutex_unlock(&second->is_free_mutex);
 		pthread_mutex_unlock(&first->is_free_mutex);
 		log_message(coder->id, get_time(coder->data->program_start
-			), coder->data->has_burnout, "%lld %d is debugging\n");
+				), coder->data->has_burnout, "%lld %d is debugging\n");
 		usleep(coder->data->time_to_refactor * 1000);
 		log_message(coder->id, get_time(coder->data->program_start
-			), coder->data->has_burnout, "%lld %d is refactoring\n");
+				), coder->data->has_burnout, "%lld %d is refactoring\n");
 		coder->number_of_compilation++;
 	}
 	return (NULL);
