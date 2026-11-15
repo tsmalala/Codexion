@@ -6,7 +6,7 @@
 /*   By: tsmalala <tsmalala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/09 20:17:22 by tsmalala          #+#    #+#             */
-/*   Updated: 2026/11/11 11:05:44 by tsmalala         ###   ########.fr       */
+/*   Updated: 2026/11/15 16:54:21 by tsmalala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,9 @@ void	*check_burnout(void *arg)
 				log_message(coders[i]->id, get_time(
 						coders[i]->data->program_start),
 					coders[i]->data->has_burnout, "%lld %d burned out\n");
+				pthread_mutex_lock(&coders[i]->data->has_burnout_mutex);
 				coders[i]->data->has_burnout = 1;
+				pthread_mutex_unlock(&coders[i]->data->has_burnout_mutex);
 				return (NULL);
 			}
 			i++;

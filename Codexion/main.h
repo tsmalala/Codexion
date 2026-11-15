@@ -6,7 +6,7 @@
 /*   By: tsmalala <tsmalala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/09 20:17:57 by tsmalala          #+#    #+#             */
-/*   Updated: 2026/11/11 10:49:39 by tsmalala         ###   ########.fr       */
+/*   Updated: 2026/11/15 16:50:36 by tsmalala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,10 @@ typedef struct Info
 	int				time_to_refactor;
 	int				number_of_compiles;
 	int				dongle_cooldown;
+	int				has_burnout;
 	char			*scheduler;
 	struct timeval	program_start;
-	int				has_burnout;
+	pthread_mutex_t	has_burnout_mutex;
 }	t_Info;
 
 typedef struct Dongle

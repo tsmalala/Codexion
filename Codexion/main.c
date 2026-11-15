@@ -6,7 +6,7 @@
 /*   By: tsmalala <tsmalala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/13 11:44:50 by tsmalala          #+#    #+#             */
-/*   Updated: 2026/11/11 10:53:48 by tsmalala         ###   ########.fr       */
+/*   Updated: 2026/11/15 16:51:25 by tsmalala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ int	main(int argc, char **argv)
 	if (argc != 9)
 		return (printf("[Error]: Not enough arguments.\n"), 1);
 	data = parser(argv);
+	pthread_mutex_init(&data->has_burnout_mutex, NULL);
 	if (!data)
 		return (1);
 	coders = malloc(sizeof(t_Coder *) * data->number_coders);

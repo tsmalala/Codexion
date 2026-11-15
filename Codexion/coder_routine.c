@@ -6,7 +6,7 @@
 /*   By: tsmalala <tsmalala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/09 20:17:38 by tsmalala          #+#    #+#             */
-/*   Updated: 2026/11/11 11:01:14 by tsmalala         ###   ########.fr       */
+/*   Updated: 2026/11/15 16:48:46 by tsmalala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,13 @@ void	*coder_routine(void *arg)
 	while (coder->number_of_compilation
 		< coder->data->number_of_compiles)
 	{
+		pthread_mutex_lock(&coder->data->has_burnout_mutex);
 		if (coder->data->has_burnout == 1)
+		{
+			pthread_mutex_unlock(&coder->data->has_burnout_mutex);
 			return (NULL);
+		}
+		pthread_mutex_unlock(&coder->data->has_burnout_mutex);
 		if (coder->left_dongle->id < coder->right_dongle->id)
 		{
 			first = coder->left_dongle;
@@ -38,9 +43,11 @@ void	*coder_routine(void *arg)
 			first = coder->right_dongle;
 			second = coder->left_dongle;
 		}
+		if (first->id == second->id)
+			return (NULL);
 		coder->is_compiling = 0;
 		gettimeofday(&coder->time_request, NULL);
-		while (scheduler(coder))
+		while (scheduler(coder) && !coder->data->has_burnout)
 		{
 		}
 		pthread_mutex_lock(&first->is_free_mutex);
@@ -48,7 +55,8 @@ void	*coder_routine(void *arg)
 		first->is_free = 0;
 		second->is_free = 0;
 		coder->is_compiling = 1;
-		while (dongle_cooldown(first, second, coder->data->dongle_cooldown))
+		while (dongle_cooldown(first, second, coder->data->dongle_cooldown
+			) && !coder->data->has_burnout)
 		{
 		}
 		log_message(coder->id, get_time(coder->data->program_start
@@ -67,9 +75,10 @@ void	*coder_routine(void *arg)
 		pthread_mutex_unlock(&first->is_free_mutex);
 		log_message(coder->id, get_time(coder->data->program_start
 				), coder->data->has_burnout, "%lld %d is debugging\n");
-		usleep(coder->data->time_to_refactor * 1000);
+		usleep(coder->data->time_to_debug * 1000);
 		log_message(coder->id, get_time(coder->data->program_start
 				), coder->data->has_burnout, "%lld %d is refactoring\n");
+		usleep(coder->data->time_to_refactor * 1000);
 		coder->number_of_compilation++;
 	}
 	return (NULL);

@@ -6,7 +6,7 @@
 /*   By: tsmalala <tsmalala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/13 11:43:07 by tsmalala          #+#    #+#             */
-/*   Updated: 2026/11/11 11:11:04 by tsmalala         ###   ########.fr       */
+/*   Updated: 2026/11/11 13:10:04 by tsmalala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int	error_handlers(int number_of_coders, char *scheduler, char *argv[])
 	if (arg_validator(argv) == 0)
 		return (0);
 	to_lower_string(scheduler);
-	if (number_of_coders < 0)
+	if (number_of_coders <= 0)
 		return (0);
 	if (strcmp(scheduler, "fifo") != 0 && strcmp(scheduler, "edf") != 0)
 		return (0);
