@@ -47,7 +47,8 @@ typedef struct Coder
 	t_Info			*data;
 	pthread_t		pthread;
 	int				number_of_compilation;
-	int				is_compiling;
+	int				is_waiting;
+	pthread_mutex_t	is_waiting_mutex;
 	struct timeval	last_compilation;
 	struct timeval	time_request;
 	struct Coder	*left_coder;

@@ -39,19 +39,17 @@ int	arg_validator(char *argv[])
 	int			i;
 	int			j;
 	long int	n;
-	char		*str;
 
 	i = 1;
 	while (i <= 7)
 	{
 		j = 0;
 		n = 0;
-		str = argv[i];
-		while (str[j])
+		while (argv[i][j])
 		{
-			if (str[j] >= '0' && str[j] <= '9')
+			if (argv[i][j] >= '0' && argv[i][j] <= '9')
 			{
-				n = n * 10 + (str[j] - '0');
+				n = n * 10 + (argv[i][j] - '0');
 				j++;
 			}
 			else

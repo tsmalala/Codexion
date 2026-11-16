@@ -78,10 +78,10 @@ static void	clean_up(t_Coder **coders, t_Dongle **dongles, int number)
 		i++;
 	}
 	free(coders);
-	while (i < number)
+	while (i_dongle < number)
 	{
-		pthread_mutex_destroy(&dongles[i]->is_free_mutex);
-		free(dongles[i]);
+		pthread_mutex_destroy(&dongles[i_dongle]->is_free_mutex);
+		free(dongles[i_dongle]);
 		i_dongle++;
 	}
 	free(dongles);
@@ -96,16 +96,16 @@ int	main(int argc, char **argv)
 	if (argc != 9)
 		return (printf("[Error]: Not enough arguments.\n"), 1);
 	data = parser(argv);
-	pthread_mutex_init(&data->has_burnout_mutex, NULL);
 	if (!data)
-		return (1);
+		return (0);
+	pthread_mutex_init(&data->has_burnout_mutex, NULL);
 	coders = malloc(sizeof(t_Coder *) * data->number_coders);
 	dongles = malloc(sizeof(t_Dongle *) * data->number_coders);
 	if (!coders || !dongles)
 		return (free(coders), free(dongles), free(data), 1);
 	if (init_dongles(dongles, data) || init_coders(coders,
 			dongles, data))
-		return (1);
+		return (free(coders), free(dongles), free(data), 1);
 	link_coders(coders, data->number_coders);
 	run_threads(coders, data);
 	clean_up(coders, dongles, data->number_coders);

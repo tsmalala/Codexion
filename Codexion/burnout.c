@@ -18,10 +18,12 @@ int	is_codexion_finished(t_Coder **coders)
 {
 	int	i;
 	int	number_of_compiles;
+	int	number_of_coder;
 
 	i = 0;
 	number_of_compiles = coders[0]->data->number_of_compiles;
-	while (i < coders[0]->data->number_coders)
+	number_of_coder = coders[0]->data->number_coders;
+	while (i < number_of_coder)
 	{
 		if (coders[i]->number_of_compilation != number_of_compiles)
 			return (0);

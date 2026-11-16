@@ -29,6 +29,8 @@ t_Dongle	*create_dongle(int dongle_cooldown, int i)
 		last_use.tv_sec--;
 	}
 	dongle = (t_Dongle *) malloc(sizeof(t_Dongle));
+	if (!dongle)
+		return (NULL);
 	dongle->last_use = last_use;
 	dongle->id = i + 1;
 	dongle->is_free = 1;
@@ -41,9 +43,13 @@ t_Coder	*create_coder(int id, t_Dongle *left_dongle, t_Dongle *right_dongle)
 	t_Coder	*coder;
 
 	coder = (t_Coder *) malloc(sizeof(t_Coder));
+	if (!coder)
+		return (NULL);
 	coder->id = id;
+	coder->is_waiting = 0;
 	coder->left_dongle = left_dongle;
 	coder->right_dongle = right_dongle;
 	coder->number_of_compilation = 0;
+	pthread_mutex_init(&coder->is_waiting_mutex, NULL);
 	return (coder);
 }

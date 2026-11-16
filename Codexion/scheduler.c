@@ -17,7 +17,7 @@
 
 int	fifo(t_Coder *coder, t_Coder *neighbor)
 {
-	if (neighbor->is_compiling)
+	if (neighbor->is_waiting)
 		return (1);
 	return (get_time(coder->time_request) >= get_time(neighbor->time_request));
 }
@@ -29,15 +29,20 @@ long long	get_deadline(t_Coder *coder)
 
 int	edf(t_Coder *coder, t_Coder *neighbor)
 {
-	if (neighbor->is_compiling)
+	if (neighbor->is_waiting)
 		return (1);
 	return (get_deadline(coder) <= get_deadline(neighbor));
 }
 
 int	scheduler(t_Coder *coder)
 {
+	pthread_mutex_lock(&coder->data->has_burnout_mutex);
 	if (coder->data->has_burnout)
+	{
+		pthread_mutex_unlock(&coder->data->has_burnout_mutex);
 		return (0);
+	}
+	pthread_mutex_unlock(&coder->data->has_burnout_mutex);
 	if (strcmp(coder->data->scheduler, "fifo") == 0)
 	{
 		if (fifo(coder, coder->left_coder)
