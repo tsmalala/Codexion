@@ -25,7 +25,7 @@ int	is_codexion_finished(t_Coder **coders)
 	number_of_coder = coders[0]->data->number_coders;
 	while (i < number_of_coder)
 	{
-		if (coders[i]->number_of_compilation != number_of_compiles)
+		if (coders[i]->number_of_compilation != (number_of_compiles - 1))
 			return (0);
 		i++;
 	}
@@ -41,7 +41,7 @@ void	*check_burnout(void *arg)
 	while (!is_codexion_finished(coders))
 	{
 		i = 0;
-		while (i < coders[0]->data->number_coders)
+		while (i < coders[0]->data->number_of_compiles)
 		{
 			if (get_time(coders[i]->last_compilation
 				) >= coders[i]->data->time_to_burnout)
