@@ -114,6 +114,7 @@ int	main(int argc, char **argv)
 	run_threads(coders, data);
 	clean_up(coders, dongles, data->number_coders);
 	pthread_mutex_destroy(&data->has_burnout_mutex);
+	pthread_mutex_destroy(&data->printf_mutex);
 	free(data);
 	return (0);
 }

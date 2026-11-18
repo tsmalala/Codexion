@@ -36,7 +36,6 @@ typedef struct Dongle
 {
 	int				id;
 	struct timeval	last_use;
-	int				is_free;
 	pthread_mutex_t	is_free_mutex;
 }	t_Dongle;
 

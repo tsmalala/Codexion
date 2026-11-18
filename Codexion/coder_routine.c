@@ -43,8 +43,6 @@ void	write_message(t_Coder *coder,
 	usleep(coder->data->time_to_compile * 1000);
 	gettimeofday(&coder->left_dongle->last_use, NULL);
 	gettimeofday(&coder->right_dongle->last_use, NULL);
-	first->is_free = 1;
-	second->is_free = 1;
 	pthread_mutex_unlock(&second->is_free_mutex);
 	pthread_mutex_unlock(&first->is_free_mutex);
 	log_message(coder, get_time(coder->data->program_start
@@ -68,8 +66,6 @@ void	run_cycle(t_Coder *coder,
 	}
 	pthread_mutex_unlock(&coder->data->has_burnout_mutex);
 	pthread_mutex_lock(&coder->is_waiting_mutex);
-	first->is_free = 0;
-	second->is_free = 0;
 	coder->is_waiting = 1;
 	pthread_mutex_unlock(&coder->is_waiting_mutex);
 	write_message(coder, first, second);

@@ -33,7 +33,6 @@ t_Dongle	*create_dongle(int dongle_cooldown, int i)
 		return (NULL);
 	dongle->last_use = last_use;
 	dongle->id = i + 1;
-	dongle->is_free = 1;
 	pthread_mutex_init(&dongle->is_free_mutex, NULL);
 	return (dongle);
 }
