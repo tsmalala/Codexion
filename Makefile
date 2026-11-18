@@ -2,20 +2,20 @@ NAME = codexion
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -pthread
-INCLUDES = -I Codexion
+INCLUDES = -I src
 
-SRC = Codexion/main.c \
-      Codexion/parsing.c \
-      Codexion/initialization.c \
-      Codexion/time_utils.c \
-      Codexion/scheduler.c \
-      Codexion/coder_routine.c \
-      Codexion/burnout.c \
-      Codexion/threads.c
+SRC = src/main.c \
+      src/parsing.c \
+      src/initialization.c \
+      src/time_utils.c \
+      src/scheduler.c \
+      src/coder_routine.c \
+      src/burnout.c \
+      src/threads.c
 
 OBJ_DIR = obj
 
-OBJ = $(SRC:Codexion/%.c=$(OBJ_DIR)/%.o)
+OBJ = $(SRC:src/%.c=$(OBJ_DIR)/%.o)
 
 all: $(NAME)
 
@@ -25,7 +25,7 @@ $(NAME): $(OBJ)
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
-$(OBJ_DIR)/%.o: Codexion/%.c | $(OBJ_DIR)
+$(OBJ_DIR)/%.o: src/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
