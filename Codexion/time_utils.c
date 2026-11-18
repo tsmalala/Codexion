@@ -25,13 +25,17 @@ long long	get_time(struct timeval start)
 	return (diff_ms);
 }
 
-void	log_message(int coder_id, long long program_start,
+void	log_message(t_Coder *coder, long long program_start,
 						int is_burnout, char *message)
 {
 	if (is_burnout == 1)
 		return ;
 	else
-		printf(message, program_start, coder_id);
+	{
+		pthread_mutex_lock(&coder->data->printf_mutex);
+		printf(message, program_start, coder->id);
+		pthread_mutex_unlock(&coder->data->printf_mutex);
+	}
 }
 
 int	dongle_cooldown(t_Dongle *first, t_Dongle *second, int dongle_cooldown)

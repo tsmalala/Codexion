@@ -17,7 +17,7 @@
 # include <sys/time.h>
 
 long long	get_time(struct timeval start);
-void		log_message(int coder_id, long long program_start,
+void		log_message(t_Coder *coder, long long program_start,
 				int is_burnout, char *message);
 int			dongle_cooldown(t_Dongle *first, t_Dongle *second,
 				int dongle_cooldown);

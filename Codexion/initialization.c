@@ -50,6 +50,9 @@ t_Coder	*create_coder(int id, t_Dongle *left_dongle, t_Dongle *right_dongle)
 	coder->left_dongle = left_dongle;
 	coder->right_dongle = right_dongle;
 	coder->number_of_compilation = 0;
+	gettimeofday(&coder->time_request, NULL);
+	pthread_mutex_init(&coder->compilation_mutex, NULL);
 	pthread_mutex_init(&coder->is_waiting_mutex, NULL);
+	pthread_mutex_init(&coder->last_compilation_mutex, NULL);
 	return (coder);
 }

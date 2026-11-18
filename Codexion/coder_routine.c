@@ -28,39 +28,17 @@ int	has_burnout(t_Coder *coder)
 	return (1);
 }
 
-int	wait_and_acquire(t_Coder *coder,
+void	write_message(t_Coder *coder,
 	t_Dongle *first, t_Dongle *second)
 {
-	pthread_mutex_lock(&coder->is_waiting_mutex);
-	coder->is_waiting = 0;
-	pthread_mutex_unlock(&coder->is_waiting_mutex);
-	gettimeofday(&coder->time_request, NULL);
-	while (scheduler(coder) && !coder->data->has_burnout)
-	{
-	}
-	pthread_mutex_lock(&first->is_free_mutex);
-	pthread_mutex_lock(&second->is_free_mutex);
-	first->is_free = 0;
-	second->is_free = 0;
-	pthread_mutex_lock(&coder->is_waiting_mutex);
-	coder->is_waiting = 1;
-	pthread_mutex_unlock(&coder->is_waiting_mutex);
-	return (1);
-}
-
-void	run_cycle(t_Coder *coder,
-	t_Dongle *first, t_Dongle *second)
-{
-	while (dongle_cooldown(first, second, coder->data->dongle_cooldown
-		) && !coder->data->has_burnout)
-	{
-	}
-	log_message(coder->id, get_time(coder->data->program_start
+	log_message(coder, get_time(coder->data->program_start
 			), coder->data->has_burnout, "%lld %d has taken a dongle\n");
-	log_message(coder->id, get_time(coder->data->program_start
+	log_message(coder, get_time(coder->data->program_start
 			), coder->data->has_burnout, "%lld %d has taken a dongle\n");
+	pthread_mutex_lock(&coder->last_compilation_mutex);
 	gettimeofday(&coder->last_compilation, NULL);
-	log_message(coder->id, get_time(coder->data->program_start
+	pthread_mutex_unlock(&coder->last_compilation_mutex);
+	log_message(coder, get_time(coder->data->program_start
 			), coder->data->has_burnout, "%lld %d is compiling\n");
 	usleep(coder->data->time_to_compile * 1000);
 	gettimeofday(&coder->left_dongle->last_use, NULL);
@@ -69,19 +47,62 @@ void	run_cycle(t_Coder *coder,
 	second->is_free = 1;
 	pthread_mutex_unlock(&second->is_free_mutex);
 	pthread_mutex_unlock(&first->is_free_mutex);
-	log_message(coder->id, get_time(coder->data->program_start
+	log_message(coder, get_time(coder->data->program_start
 			), coder->data->has_burnout, "%lld %d is debugging\n");
 	usleep(coder->data->time_to_debug * 1000);
-	log_message(coder->id, get_time(coder->data->program_start
+	log_message(coder, get_time(coder->data->program_start
 			), coder->data->has_burnout, "%lld %d is refactoring\n");
 	usleep(coder->data->time_to_refactor * 1000);
+}
+
+void	run_cycle(t_Coder *coder,
+	t_Dongle *first, t_Dongle *second)
+{
+	pthread_mutex_lock(&coder->data->has_burnout_mutex);
+	if (coder->data->has_burnout)
+	{
+		pthread_mutex_unlock(&first->is_free_mutex);
+		pthread_mutex_unlock(&second->is_free_mutex);
+		pthread_mutex_unlock(&coder->data->has_burnout_mutex);
+		return ;
+	}
+	pthread_mutex_unlock(&coder->data->has_burnout_mutex);
+	pthread_mutex_lock(&coder->is_waiting_mutex);
+	first->is_free = 0;
+	second->is_free = 0;
+	coder->is_waiting = 1;
+	pthread_mutex_unlock(&coder->is_waiting_mutex);
+	write_message(coder, first, second);
+	pthread_mutex_lock(&coder->compilation_mutex);
 	coder->number_of_compilation++;
+	pthread_mutex_unlock(&coder->compilation_mutex);
+	gettimeofday(&coder->time_request, NULL);
 }
 
 void	combined_function(t_Coder *coder, t_Dongle *first, t_Dongle *second)
 {
-	if (!wait_and_acquire(coder, first, second))
+	pthread_mutex_lock(&coder->is_waiting_mutex);
+	coder->is_waiting = 0;
+	pthread_mutex_unlock(&coder->is_waiting_mutex);
+	while (scheduler(coder) && !coder->data->has_burnout)
+	{
+	}
+	pthread_mutex_lock(&coder->data->has_burnout_mutex);
+	if (coder->data->has_burnout)
+	{
+		pthread_mutex_unlock(&coder->data->has_burnout_mutex);
 		return ;
+	}
+	pthread_mutex_unlock(&coder->data->has_burnout_mutex);
+	pthread_mutex_lock(&first->is_free_mutex);
+	pthread_mutex_lock(&second->is_free_mutex);
+	if (dongle_cooldown(first, second, coder->data->dongle_cooldown
+		) && !coder->data->has_burnout)
+	{
+		pthread_mutex_unlock(&second->is_free_mutex);
+		pthread_mutex_unlock(&first->is_free_mutex);
+		return ;
+	}
 	run_cycle(coder, first, second);
 }
 

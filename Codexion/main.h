@@ -28,6 +28,7 @@ typedef struct Info
 	int				has_burnout;
 	char			*scheduler;
 	struct timeval	program_start;
+	pthread_mutex_t	printf_mutex;
 	pthread_mutex_t	has_burnout_mutex;
 }	t_Info;
 
@@ -47,9 +48,11 @@ typedef struct Coder
 	t_Info			*data;
 	pthread_t		pthread;
 	int				number_of_compilation;
+	pthread_mutex_t	compilation_mutex;
 	int				is_waiting;
 	pthread_mutex_t	is_waiting_mutex;
 	struct timeval	last_compilation;
+	pthread_mutex_t	last_compilation_mutex;
 	struct timeval	time_request;
 	struct Coder	*left_coder;
 	struct Coder	*right_coder;

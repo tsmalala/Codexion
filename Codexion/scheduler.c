@@ -17,20 +17,41 @@
 
 int	fifo(t_Coder *coder, t_Coder *neighbor)
 {
+	long long	coder_requested;
+	long long	neighbor_requested;
+
+	pthread_mutex_lock(&neighbor->is_waiting_mutex);
 	if (neighbor->is_waiting)
+	{
+		pthread_mutex_unlock(&neighbor->is_waiting_mutex);
 		return (1);
-	return (get_time(coder->time_request) >= get_time(neighbor->time_request));
+	}
+	pthread_mutex_unlock(&neighbor->is_waiting_mutex);
+	coder_requested = get_time(coder->time_request);
+	neighbor_requested = get_time(neighbor->time_request);
+	return (coder_requested >= neighbor_requested);
 }
 
 long long	get_deadline(t_Coder *coder)
 {
-	return (get_time(coder->last_compilation) + coder->data->time_to_burnout);
+	long long	last_compilation;
+
+	pthread_mutex_lock(&coder->last_compilation_mutex);
+	last_compilation = get_time(coder->data->program_start
+			) - get_time(coder->last_compilation);
+	pthread_mutex_unlock(&coder->last_compilation_mutex);
+	return (last_compilation + coder->data->time_to_burnout);
 }
 
 int	edf(t_Coder *coder, t_Coder *neighbor)
 {
+	pthread_mutex_lock(&neighbor->is_waiting_mutex);
 	if (neighbor->is_waiting)
+	{
+		pthread_mutex_unlock(&neighbor->is_waiting_mutex);
 		return (1);
+	}
+	pthread_mutex_unlock(&neighbor->is_waiting_mutex);
 	return (get_deadline(coder) <= get_deadline(neighbor));
 }
 

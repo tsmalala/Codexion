@@ -74,6 +74,9 @@ static void	clean_up(t_Coder **coders, t_Dongle **dongles, int number)
 	i_dongle = 0;
 	while (i < number)
 	{
+		pthread_mutex_destroy(&coders[i]->compilation_mutex);
+		pthread_mutex_destroy(&coders[i]->is_waiting_mutex);
+		pthread_mutex_destroy(&coders[i]->last_compilation_mutex);
 		free(coders[i]);
 		i++;
 	}
@@ -99,6 +102,7 @@ int	main(int argc, char **argv)
 	if (!data)
 		return (0);
 	pthread_mutex_init(&data->has_burnout_mutex, NULL);
+	pthread_mutex_init(&data->printf_mutex, NULL);
 	coders = malloc(sizeof(t_Coder *) * data->number_coders);
 	dongles = malloc(sizeof(t_Dongle *) * data->number_coders);
 	if (!coders || !dongles)
@@ -109,6 +113,7 @@ int	main(int argc, char **argv)
 	link_coders(coders, data->number_coders);
 	run_threads(coders, data);
 	clean_up(coders, dongles, data->number_coders);
+	pthread_mutex_destroy(&data->has_burnout_mutex);
 	free(data);
 	return (0);
 }
